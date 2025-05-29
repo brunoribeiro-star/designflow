@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/project_provider.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,7 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // AuthGate faz o redirecionamento!
+      // Carrega os projetos do usuário autenticado
+      await Provider.of<ProjectProvider>(context, listen: false).loadProjects();
+      // AuthGate faz o redirecionamento automático
     } on FirebaseAuthException {
       setState(() {
         _error = "Email ou senha inválidos";
@@ -211,8 +216,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 18),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // CORREÇÃO: Wrap evita overflow em telas pequenas
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       const Text(
                         "Não possui uma conta?",
@@ -229,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         child: const Text(
-                          "Crie uma conta agora!",
+                          " Crie uma conta agora!",
                           style: TextStyle(
                             color: primaryColor,
                             fontWeight: FontWeight.bold,

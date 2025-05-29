@@ -13,29 +13,22 @@ class ServiceTypeProvider with ChangeNotifier {
 
   String? get _userId => _auth.currentUser?.uid;
 
-  /// Carrega tipos de serviço do Firestore
-  Future<void> fetchServiceTypes() async {
+  /// Carrega tipos de serviço do Firestore (por usuário logado)
+  Future<void> loadServiceTypes() async {
     if (_userId == null) return;
     final snapshot = await _firestore
         .collection('users')
         .doc(_userId)
         .collection('service_types')
-        .orderBy('createdAt')
+        .orderBy('createdAt', descending: true)
         .get();
 
     _serviceTypes.clear();
-    _serviceTypes.addAll(snapshot.docs.map((doc) {
-      final data = doc.data();
-      return ServiceType(
-        id: doc.id,
-        name: data['name'],
-        createdAt: DateTime.parse(data['createdAt']),
-      );
-    }));
+    _serviceTypes.addAll(snapshot.docs.map((doc) => ServiceType.fromFirestore(doc)));
     notifyListeners();
   }
 
-  /// Adiciona tipo de serviço no Firestore
+  /// Adiciona tipo de serviço no Firestore (no topo da lista)
   Future<void> addServiceType(ServiceType type) async {
     if (_userId == null) return;
     final doc = await _firestore
@@ -43,8 +36,8 @@ class ServiceTypeProvider with ChangeNotifier {
         .doc(_userId)
         .collection('service_types')
         .add(type.toFirestore());
-    // Agora salva id do firestore (String)
-    _serviceTypes.add(type.copyWith(id: doc.id));
+    // Adiciona o novo tipo no início da lista
+    _serviceTypes.insert(0, type.copyWith(id: doc.id));
     notifyListeners();
   }
 
@@ -93,6 +86,12 @@ class ServiceTypeProvider with ChangeNotifier {
     } catch (_) {
       return null;
     }
+  }
+
+  /// (Opcional) Limpa os tipos ao fazer logout, chame isso no signOut do app
+  void clear() {
+    _serviceTypes.clear();
+    notifyListeners();
   }
 }
 

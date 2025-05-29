@@ -27,8 +27,20 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   PaymentMethod _selectedPaymentMethod = PaymentMethod.card;
   int _installments = 1;
 
-  // Para armazenar itens do checklist inicial
   List<ChecklistItem> _checklist = [];
+
+  bool _loadingServiceTypes = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Carrega os tipos de serviço ao abrir a tela, garantindo lista correta
+    Future.microtask(() async {
+      setState(() => _loadingServiceTypes = true);
+      await Provider.of<ServiceTypeProvider>(context, listen: false).loadServiceTypes();
+      setState(() => _loadingServiceTypes = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +177,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                             final newClient =
                             Client(name: name, createdAt: DateTime.now());
                             await clientProvider.addClient(newClient);
-                            // Aguarda recarregar lista de clientes (opcional)
                             await clientProvider.loadClients();
                             setState(() {
                               _selectedClient = clientProvider.findByName(name);
@@ -187,7 +198,12 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    DropdownButtonFormField<ServiceType>(
+                    _loadingServiceTypes
+                        ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                        : DropdownButtonFormField<ServiceType>(
                       value: _selectedServiceType,
                       hint: const Text("Selecione o tipo de serviço"),
                       icon: const Icon(Icons.expand_more_rounded),
@@ -196,7 +212,8 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           .map((st) =>
                           DropdownMenuItem(value: st, child: Text(st.name)))
                           .toList(),
-                      onChanged: (st) => setState(() => _selectedServiceType = st),
+                      onChanged: (st) =>
+                          setState(() => _selectedServiceType = st),
                       validator: (value) =>
                       value == null ? "Selecione um tipo de serviço" : null,
                     ),
@@ -234,10 +251,8 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                             final newType =
                             ServiceType(name: name, createdAt: DateTime.now());
                             await serviceTypeProvider.addServiceType(newType);
-                            // Aguarda recarregar a lista para garantir seleção correta
-                            await serviceTypeProvider.fetchServiceTypes();
+                            await serviceTypeProvider.loadServiceTypes();
                             setState(() {
-                              // Busca a instância correta na lista atualizada (por nome)
                               _selectedServiceType =
                                   serviceTypeProvider.findByName(name);
                             });
@@ -497,8 +512,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                             paidInitial: _selectedPaymentMethod == PaymentMethod.pixSplit
                                 ? _paidInitial
                                 : _isPaid,
-                            paidFinal:
-                            false, // o final será marcado no fechamento do projeto
+                            paidFinal: false,
                           );
 
                           final project = Project(

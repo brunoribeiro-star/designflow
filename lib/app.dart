@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
@@ -8,6 +9,7 @@ import 'screens/project_detail_screen.dart';
 import 'screens/clients_screen.dart';
 import 'screens/service_types_screen.dart';
 import 'screens/projects_by_status_screen.dart';
+import 'providers/project_provider.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -53,25 +55,25 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 18,
             color: Color(0xFF1C1C1C),
-            fontWeight: FontWeight.w600, // semi-bold
+            fontWeight: FontWeight.w600,
           ),
           bodyMedium: TextStyle(
             fontFamily: 'Inter',
             fontSize: 16,
             color: Color(0xFF1C1C1C),
-            fontWeight: FontWeight.w600, // semi-bold
+            fontWeight: FontWeight.w600,
           ),
           bodySmall: TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
             color: Color(0xFF6E6E73),
-            fontWeight: FontWeight.w400, // regular
+            fontWeight: FontWeight.w400,
           ),
           labelLarge: TextStyle(
             fontFamily: 'Inter',
             fontSize: 16,
             color: Color(0xFFF9F9FB),
-            fontWeight: FontWeight.w600, // botões semi-bold
+            fontWeight: FontWeight.w600,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
@@ -116,7 +118,6 @@ class MyApp extends StatelessWidget {
         dividerColor: const Color(0xFFE0E0E0),
         cardColor: Colors.white,
       ),
-      // <<<<<< TUDO ABAIXO MUDA >>>>>>
       home: const AuthGate(),
       routes: {
         '/add-project': (context) => const AddProjectScreen(),
@@ -135,6 +136,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// >>>>>>>>>>>>>> AUTH GATE <<<<<<<<<<<<<<<<
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -143,17 +145,21 @@ class AuthGate extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        // Mostra loading durante inicialização
+        // Loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        // Logado: tela principal
+        // Logado: carrega os projetos do usuário autenticado ANTES de abrir a Home
         if (snapshot.hasData) {
+          // Carrega projetos do usuário atual
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<ProjectProvider>(context, listen: false).loadProjects();
+          });
           return const HomeScreen();
         }
-        // Não logado: tela de login
+        // Não logado
         return const LoginScreen();
       },
     );

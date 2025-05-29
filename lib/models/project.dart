@@ -5,6 +5,7 @@ enum ProjectStatus { notStarted, inProgress, finished }
 
 class Project {
   String? id; // Firestore docId ou SQLite id (string)
+  String? userId; // <-- Adicionado para multi-usuário
   String name;
   Client client;
   ServiceType serviceType;
@@ -18,6 +19,7 @@ class Project {
 
   Project({
     this.id,
+    this.userId, // <-- Adicionado aqui
     required this.name,
     required this.client,
     required this.serviceType,
@@ -42,6 +44,7 @@ class Project {
   /// ---------- SERIALIZAÇÃO PARA FIRESTORE ----------
   Map<String, dynamic> toFirestore() {
     return {
+      'userId': userId, // <-- Adicionado
       'name': name,
       'client': client.toFirestore(),
       'serviceType': serviceType.toFirestore(),
@@ -59,6 +62,7 @@ class Project {
     final map = doc.data() as Map<String, dynamic>;
     return Project(
       id: doc.id,
+      userId: map['userId'], // <-- Recupera userId
       name: map['name'] ?? '',
       client: Client.fromMap(Map<String, dynamic>.from(map['client'] ?? {})),
       serviceType: ServiceType.fromMap(
@@ -79,7 +83,6 @@ class Project {
   }
 
   /// ---------- SERIALIZAÇÃO PARA SQLite/local ----------
-  // Lembre: aqui, client, serviceType, checklist e payment já vêm prontos das consultas relacionadas
   factory Project.fromMap(
       Map<String, dynamic> map,
       Client client,
@@ -90,6 +93,7 @@ class Project {
       }) {
     return Project(
       id: map['id']?.toString(),
+      userId: map['userId'], // <-- Recupera userId localmente também, se houver
       name: map['name'] ?? '',
       client: client,
       serviceType: serviceType,

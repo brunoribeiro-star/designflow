@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/project_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,8 +29,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // Você pode salvar o nome do usuário no Firestore se quiser.
-      Navigator.pop(context); // Volta pro login.
+      // Limpa/carrega os projetos do novo usuário cadastrado
+      await Provider.of<ProjectProvider>(context, listen: false).loadProjects();
+      Navigator.pop(context); // Volta pro login (AuthGate vai redirecionar)
     } on FirebaseAuthException catch (e) {
       setState(() {
         _error = e.code == 'email-already-in-use'
