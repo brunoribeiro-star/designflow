@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "34598155933",
+    "project_id": "designflow-app",
+    "storage_bucket": "designflow-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34598155933:android:56df7300ffe12caea0c674",
+        "android_client_info": {
+          "package_name": "com.example.designflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtFp8_UoQA11GNnRENlOug6dpjLGGrlas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
