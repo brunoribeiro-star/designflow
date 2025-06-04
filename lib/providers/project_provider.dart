@@ -53,20 +53,23 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Atualiza um projeto do usuário logado
-  Future<void> updateProject(Project project) async {
-    if (_userId == null || project.id == null) return;
+  /// Atualiza um projeto do usuário logado (corrigido para receber projeto original e atualizado)
+  Future<void> updateProject(Project original, Project updated) async {
+    if (_userId == null || original.id == null) return;
+
+    // Garante que o id seja mantido no projeto atualizado
+    updated.id = original.id;
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(_userId)
         .collection('projects')
-        .doc(project.id)
-        .set(project.toFirestore());
+        .doc(original.id)
+        .set(updated.toFirestore());
 
-    final index = _projects.indexWhere((p) => p.id == project.id);
+    final index = _projects.indexWhere((p) => p.id == original.id);
     if (index != -1) {
-      _projects[index] = project;
+      _projects[index] = updated;
       notifyListeners();
     }
   }
@@ -94,7 +97,7 @@ class ProjectProvider with ChangeNotifier {
       _projects[pIndex].checklist.indexWhere((i) => i.title == item.title);
       if (cIndex != -1) {
         _projects[pIndex].checklist[cIndex].isDone = item.isDone;
-        await updateProject(_projects[pIndex]);
+        await updateProject(_projects[pIndex], _projects[pIndex]);
       }
     }
   }
@@ -108,7 +111,7 @@ class ProjectProvider with ChangeNotifier {
           .indexWhere((i) => i.title == item.title);
       if (cIndex != -1) {
         _projects[pIndex].executionChecklist[cIndex].isDone = item.isDone;
-        await updateProject(_projects[pIndex]);
+        await updateProject(_projects[pIndex], _projects[pIndex]);
       }
     }
   }
@@ -118,7 +121,7 @@ class ProjectProvider with ChangeNotifier {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
       _projects[pIndex].executionChecklist = List.from(checklist);
-      await updateProject(_projects[pIndex]);
+      await updateProject(_projects[pIndex], _projects[pIndex]);
     }
   }
 
@@ -127,7 +130,7 @@ class ProjectProvider with ChangeNotifier {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
       _projects[pIndex].status = status;
-      await updateProject(_projects[pIndex]);
+      await updateProject(_projects[pIndex], _projects[pIndex]);
     }
   }
 
@@ -136,7 +139,7 @@ class ProjectProvider with ChangeNotifier {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
       _projects[pIndex].isPaid = isPaid;
-      await updateProject(_projects[pIndex]);
+      await updateProject(_projects[pIndex], _projects[pIndex]);
     }
   }
 

@@ -18,7 +18,6 @@ class _ServiceTypesScreenState extends State<ServiceTypesScreen> {
   @override
   void initState() {
     super.initState();
-    // Corrigido: chama o método loadServiceTypes()
     _fetchFuture = Provider.of<ServiceTypeProvider>(context, listen: false).loadServiceTypes();
   }
 

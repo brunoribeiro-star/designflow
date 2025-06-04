@@ -13,7 +13,6 @@ class ProjectDetailScreen extends StatefulWidget {
 class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   late Project project;
 
-  // Controle para criação do checklist de execução
   bool showCreateExecutionChecklistDialog = false;
   final TextEditingController _executionChecklistController = TextEditingController();
   List<ChecklistItem> _executionChecklistDraft = [];
@@ -46,7 +45,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       setState(() {
         showCreateExecutionChecklistDialog = true;
       });
-      // Altera status para EM ANDAMENTO
       project.status = ProjectStatus.inProgress;
       Provider.of<ProjectProvider>(context, listen: false)
           .changeStatus(project, ProjectStatus.inProgress);
@@ -146,7 +144,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     }
   }
 
-  // --- BLOQUEIO DE SAÍDA ---
   Future<bool> _handleWillPop() async {
     if (showCreateExecutionChecklistDialog && project.executionChecklist.isEmpty) {
       await showDialog(
@@ -163,187 +160,267 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           ],
         ),
       );
-      return false; // bloqueia saída
+      return false;
     }
-    return true; // libera saída
+    return true;
+  }
+
+  Widget _buildStatusChip(ProjectStatus status) {
+    Color color;
+    IconData icon;
+    String text;
+    switch (status) {
+      case ProjectStatus.notStarted:
+        color = Colors.orange[600]!;
+        icon = Icons.access_time_rounded;
+        text = "Não iniciado";
+        break;
+      case ProjectStatus.inProgress:
+        color = Colors.blue[700]!;
+        icon = Icons.play_arrow_rounded;
+        text = "Em andamento";
+        break;
+      case ProjectStatus.finished:
+        color = Colors.green[600]!;
+        icon = Icons.check_circle_rounded;
+        text = "Finalizado";
+        break;
+      default:
+        color = Colors.grey;
+        icon = Icons.info_outline;
+        text = "Desconhecido";
+    }
+    return Chip(
+      avatar: Icon(icon, color: Colors.white, size: 20),
+      backgroundColor: color,
+      label: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+    );
+  }
+
+  Widget _buildPaymentStatus() {
+    final styleBold = const TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+    final stylePaid = styleBold.copyWith(color: Colors.green[700]);
+    final stylePending = styleBold.copyWith(color: Colors.red[400]);
+    if (project.payment.method == PaymentMethod.pixSplit) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.payments_outlined, color: Colors.grey[600], size: 20),
+              const SizedBox(width: 8),
+              Text("Pagamento: ", style: styleBold),
+              Text(
+                project.payment.paidInitial ? "50% iniciais pagos" : "Aguardando 50% iniciais",
+                style: project.payment.paidInitial ? stylePaid : stylePending,
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const SizedBox(width: 28),
+              Text("Restante: ", style: styleBold),
+              Text(
+                project.payment.paidFinal ? "50% finais pagos" : "Aguardando 50% finais (na entrega)",
+                style: project.payment.paidFinal ? stylePaid : stylePending,
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Icon(Icons.payments_outlined, color: Colors.grey[600], size: 20),
+          const SizedBox(width: 8),
+          Text("Pagamento: ", style: styleBold),
+          Text(
+            project.isPaid ? "Concluído" : "Pendente",
+            style: project.isPaid ? stylePaid : stylePending,
+          ),
+        ],
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     project = ModalRoute.of(context)!.settings.arguments as Project;
+    final theme = Theme.of(context);
 
     return WillPopScope(
       onWillPop: _handleWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(project.name),
+          title: const Text('Detalhes do Projeto'),
           automaticallyImplyLeading: true,
+          backgroundColor: const Color(0xFF5E60CE),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // NOME DO PROJETO (maior destaque)
                 Text(
-                  "Cliente: ${project.client.name}",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  project.name,
+                  style: theme.textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF22223B),
+                  ),
                 ),
-                const SizedBox(height: 12),
-                Text("Tipo de Serviço: ${project.serviceType.name}"),
-                const SizedBox(height: 12),
-                Text(
-                    "Data de entrega: ${project.deadline.day}/${project.deadline.month}/${project.deadline.year}"),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
+
+                // STATUS DO PROJETO (chip colorido)
+                _buildStatusChip(project.status),
+                const SizedBox(height: 16),
+
+                // DADOS PRINCIPAIS
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.person, size: 20, color: Colors.grey[700]),
+                    const SizedBox(width: 8),
+                    Text(project.client.name,
+                        style: theme.textTheme.titleMedium),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.design_services_rounded, size: 20, color: Colors.grey[700]),
+                    const SizedBox(width: 8),
+                    Text(project.serviceType.name,
+                        style: theme.textTheme.titleMedium),
+                  ],
+                ),
+                const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Text("Status do Projeto: "),
+                    Icon(Icons.event, size: 20, color: Colors.grey[700]),
+                    const SizedBox(width: 8),
                     Text(
-                      project.status == ProjectStatus.notStarted
-                          ? "Não iniciado"
-                          : project.status == ProjectStatus.inProgress
-                          ? "Em andamento"
-                          : "Finalizado",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      "Entrega: ${project.deadline.day.toString().padLeft(2, '0')}/${project.deadline.month.toString().padLeft(2, '0')}/${project.deadline.year}",
+                      style: theme.textTheme.titleMedium,
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                if (project.payment.method == PaymentMethod.pixSplit) ...[
-                  Row(
-                    children: [
-                      const Text("Pagamento: "),
-                      Text(
-                        project.payment.paidInitial
-                            ? "50% iniciais pagos"
-                            : "Aguardando 50% iniciais",
-                        style: TextStyle(
-                            color: project.payment.paidInitial ? Colors.green : Colors.red,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Text("Restante: "),
-                      Text(
-                        project.payment.paidFinal
-                            ? "50% finais pagos"
-                            : "Aguardando 50% finais (na entrega)",
-                        style: TextStyle(
-                            color: project.payment.paidFinal ? Colors.green : Colors.red,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  Row(
-                    children: [
-                      const Text("Pagamento: "),
-                      Text(project.isPaid ? "Concluído" : "Pendente",
-                          style: TextStyle(
-                              color: project.isPaid ? Colors.green : Colors.red,
-                              fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
 
-                // CHECKLISTS
+                // PAGAMENTO (destacado se pendente)
+                _buildPaymentStatus(),
+                const SizedBox(height: 22),
+
+                // --- CHECKLISTS EM CARDS ---
                 if (project.status == ProjectStatus.notStarted &&
-                    project.executionChecklist.isEmpty)
-                  ...[
-                    const Text("Checklist Inicial"),
-                    project.checklist.isEmpty
-                        ? const Text("Sem tarefas ainda.")
-                        : Column(
-                      children: project.checklist
-                          .asMap()
-                          .entries
-                          .map(
-                            (entry) => CheckboxListTile(
-                          value: entry.value.isDone,
-                          onChanged: (val) {
-                            setState(() {
-                              entry.value.isDone = val ?? false;
-                            });
-                            _checkChecklistStatus();
-                          },
-                          title: Text(entry.value.title),
-                          controlAffinity: ListTileControlAffinity.leading,
-                        ),
+                    project.executionChecklist.isEmpty) ...[
+                  Text("Checklist Inicial",
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF22223B),
+                      )),
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      child: project.checklist.isEmpty
+                          ? const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("Sem tarefas ainda.", style: TextStyle(color: Colors.grey)),
                       )
-                          .toList(),
-                    ),
-                  ]
-                else if (showCreateExecutionChecklistDialog &&
-                    project.executionChecklist.isEmpty)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Checklist de Execução do Projeto",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _executionChecklistController,
-                              decoration:
-                              const InputDecoration(hintText: "Adicionar etapa"),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              if (_executionChecklistController.text.trim().isNotEmpty) {
-                                setState(() {
-                                  _executionChecklistDraft.add(
-                                    ChecklistItem(
-                                        title:
-                                        _executionChecklistController.text.trim()),
-                                  );
-                                  _executionChecklistController.clear();
-                                });
-                              }
+                          : Column(
+                        children: project.checklist
+                            .asMap()
+                            .entries
+                            .map(
+                              (entry) => CheckboxListTile(
+                            value: entry.value.isDone,
+                            onChanged: (val) {
+                              setState(() {
+                                entry.value.isDone = val ?? false;
+                              });
+                              _checkChecklistStatus();
                             },
+                            title: Text(entry.value.title),
+                            controlAffinity: ListTileControlAffinity.leading,
                           ),
-                        ],
-                      ),
-                      if (_executionChecklistDraft.isNotEmpty)
-                        ..._executionChecklistDraft
-                            .map((item) => ListTile(
-                          leading: const Icon(Icons.check_box_outline_blank),
-                          title: Text(item.title),
-                        ))
+                        )
                             .toList(),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: _executionChecklistDraft.isEmpty
-                            ? null
-                            : () {
-                          setState(() {
-                            project.executionChecklist =
-                                List.from(_executionChecklistDraft);
-                            showCreateExecutionChecklistDialog = false;
-                            _executionChecklistDraft.clear();
-                          });
+                      ),
+                    ),
+                  ),
+                ] else if (showCreateExecutionChecklistDialog &&
+                    project.executionChecklist.isEmpty) ...[
+                  Text(
+                    "Checklist de Execução do Projeto",
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF22223B),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _executionChecklistController,
+                          decoration: const InputDecoration(hintText: "Adicionar etapa"),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          if (_executionChecklistController.text.trim().isNotEmpty) {
+                            setState(() {
+                              _executionChecklistDraft.add(
+                                ChecklistItem(
+                                    title: _executionChecklistController.text.trim()),
+                              );
+                              _executionChecklistController.clear();
+                            });
+                          }
                         },
-                        child: const Text("Salvar checklist do projeto"),
                       ),
                     ],
-                  )
-                else if (project.executionChecklist.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Checklist de Execução do Projeto",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        ...project.executionChecklist.asMap().entries.map(
+                  ),
+                  if (_executionChecklistDraft.isNotEmpty)
+                    ..._executionChecklistDraft
+                        .map((item) => ListTile(
+                      leading: const Icon(Icons.check_box_outline_blank),
+                      title: Text(item.title),
+                    ))
+                        .toList(),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: _executionChecklistDraft.isEmpty
+                        ? null
+                        : () {
+                      setState(() {
+                        project.executionChecklist =
+                            List.from(_executionChecklistDraft);
+                        showCreateExecutionChecklistDialog = false;
+                        _executionChecklistDraft.clear();
+                      });
+                    },
+                    child: const Text("Salvar checklist do projeto"),
+                  ),
+                ] else if (project.executionChecklist.isNotEmpty) ...[
+                  Text(
+                    "Checklist de Execução do Projeto",
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF22223B),
+                    ),
+                  ),
+                  Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      child: Column(
+                        children: project.executionChecklist.asMap().entries.map(
                               (entry) => CheckboxListTile(
                             value: entry.value.isDone,
                             onChanged: (val) {
@@ -355,21 +432,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             title: Text(entry.value.title),
                             controlAffinity: ListTileControlAffinity.leading,
                           ),
-                        ),
-                      ],
+                        ).toList(),
+                      ),
                     ),
-                const SizedBox(height: 22),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // No futuro: editar projeto, checklist, etc.
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Função de edição/checklist será implementada.'),
-                      ));
-                    },
-                    child: const Text("Editar/Atualizar Projeto"),
                   ),
-                ),
+                ],
+                const SizedBox(height: 10),
+                // Mais espaço inferior para UX mobile
+                const SizedBox(height: 18),
               ],
             ),
           ),

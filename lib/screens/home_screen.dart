@@ -39,190 +39,215 @@ class _HomeScreenState extends State<HomeScreen> {
         .where((p) => p.status == ProjectStatus.finished)
         .length;
 
-    return GestureDetector(
-      onTap: _closeMenu,
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        body: Stack(
-          children: [
-            // Conteúdo principal
-            Column(
-              children: [
-                AppBar(
-                  title: const Text('DesignFlow'),
-                  elevation: 0,
-                  centerTitle: true,
-                  automaticallyImplyLeading: false,
-                  backgroundColor: const Color(0xFF5E60CE),
-                  leading: IconButton(
-                    icon: Icon(
-                      _menuOpen ? Icons.close : Icons.menu,
-                      color: const Color(0xFFF9F9FB),
-                    ),
-                    onPressed: _toggleMenu,
-                    tooltip: _menuOpen ? "Fechar menu" : "Menu",
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: Stack(
+        children: [
+          // Conteúdo principal
+          Column(
+            children: [
+              AppBar(
+                title: const Text('DesignFlow'),
+                elevation: 0,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                backgroundColor: const Color(0xFF5E60CE),
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: const Color(0xFFF9F9FB),
                   ),
-                  actions: const [],
+                  onPressed: _toggleMenu,
+                  tooltip: "Menu",
                 ),
-                // O resto do conteúdo da tela
-                Expanded(
-                  child: Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Mensagem de boas-vindas
-                          Text(
-                            "Bem-vindo ao DesignFlow 👋",
-                            style: theme.textTheme.bodyLarge!.copyWith(fontSize: 22),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Visualize e organize seus projetos por etapa.\nEscolha uma categoria abaixo:",
-                            style: theme.textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 28),
+                actions: const [],
+              ),
+              // O resto do conteúdo da tela
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Mensagem de boas-vindas
+                        Text(
+                          "Bem-vindo ao DesignFlow 👋",
+                          style: theme.textTheme.bodyLarge!.copyWith(fontSize: 22),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Visualize e organize seus projetos por etapa.\nEscolha uma categoria abaixo:",
+                          style: theme.textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 28),
 
-                          // Card: Projetos a iniciar
-                          _StatusCard(
-                            icon: Icons.access_time_rounded,
-                            label: "A Iniciar",
-                            count: notStarted,
-                            color: Colors.orange[600]!,
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/projects-by-status',
-                                arguments: {
-                                  "status": ProjectStatus.notStarted,
-                                  "title": "Projetos a Iniciar"
-                                },
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 18),
+                        // Card: Projetos a iniciar
+                        _StatusCard(
+                          icon: Icons.access_time_rounded,
+                          label: "A Iniciar",
+                          count: notStarted,
+                          color: Colors.orange[600]!,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/projects-by-status',
+                              arguments: {
+                                "status": ProjectStatus.notStarted,
+                                "title": "Projetos a Iniciar"
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 18),
 
-                          // Card: Em andamento
-                          _StatusCard(
-                            icon: Icons.play_arrow_rounded,
-                            label: "Em Andamento",
-                            count: inProgress,
-                            color: Colors.blue[700]!,
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/projects-by-status',
-                                arguments: {
-                                  "status": ProjectStatus.inProgress,
-                                  "title": "Projetos em Andamento"
-                                },
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 18),
+                        // Card: Em andamento
+                        _StatusCard(
+                          icon: Icons.play_arrow_rounded,
+                          label: "Em Andamento",
+                          count: inProgress,
+                          color: Colors.blue[700]!,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/projects-by-status',
+                              arguments: {
+                                "status": ProjectStatus.inProgress,
+                                "title": "Projetos em Andamento"
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 18),
 
-                          // Card: Finalizados
-                          _StatusCard(
-                            icon: Icons.check_circle_rounded,
-                            label: "Finalizados",
-                            count: finished,
-                            color: Colors.green[600]!,
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/projects-by-status',
-                                arguments: {
-                                  "status": ProjectStatus.finished,
-                                  "title": "Projetos Finalizados"
-                                },
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 38),
+                        // Card: Finalizados
+                        _StatusCard(
+                          icon: Icons.check_circle_rounded,
+                          label: "Finalizados",
+                          count: finished,
+                          color: Colors.green[600]!,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/projects-by-status',
+                              arguments: {
+                                "status": ProjectStatus.finished,
+                                "title": "Projetos Finalizados"
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 38),
 
-                          // Botão de adicionar novo projeto (CTA destacado)
-                          SizedBox(
-                            width: 220,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.add, color: Colors.white,),
-                              label: const Text("Novo Projeto"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF5E60CE),
-                                foregroundColor: const Color(0xFFF9F9FB),
-                                padding: const EdgeInsets.symmetric(vertical: 18),
-                                textStyle: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Inter',
-                                  fontSize: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                        // Botão de adicionar novo projeto (CTA destacado)
+                        SizedBox(
+                          width: 220,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(Icons.add, color: Colors.white,),
+                            label: const Text("Novo Projeto"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF5E60CE),
+                              foregroundColor: const Color(0xFFF9F9FB),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                                fontSize: 16,
                               ),
-                              onPressed: () => Navigator.pushNamed(context, '/add-project'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
+                            onPressed: () => Navigator.pushNamed(context, '/add-project'),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-            // Overlay do Menu Hamburguer
-            if (_menuOpen)
-              Positioned(
-                top: kToolbarHeight, // logo abaixo da AppBar
-                left: 0,
-                right: 0,
-                child: Material(
-                  color: Colors.white,
-                  elevation: 3,
-                  child: Column(
+              ),
+            ],
+          ),
+          // Overlay do Menu Hamburguer - Cobre toda a tela com animação e centralizado
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 230),
+            transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+            child: _menuOpen
+                ? GestureDetector(
+              onTap: _closeMenu,
+              child: Container(
+                key: const ValueKey('menu'),
+                color: Colors.white.withOpacity(0.98),
+                width: double.infinity,
+                height: double.infinity,
+                child: SafeArea(
+                  child: Stack(
                     children: [
-                      _MenuItemVertical(
-                        icon: Icons.people_alt_rounded,
-                        label: "Gerenciar Clientes",
-                        onTap: () {
-                          _closeMenu();
-                          Navigator.pushNamed(context, '/clients');
-                        },
+                      // Botão fechar
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: IconButton(
+                          icon: const Icon(Icons.close, color: Color(0xFF5E60CE), size: 32),
+                          tooltip: "Fechar menu",
+                          onPressed: _closeMenu,
+                        ),
                       ),
-                      const Divider(height: 1, color: Color(0xFFE0E0E0)),
-                      _MenuItemVertical(
-                        icon: Icons.design_services_rounded,
-                        label: "Tipos de Serviço",
-                        onTap: () {
-                          _closeMenu();
-                          Navigator.pushNamed(context, '/service-types');
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFE0E0E0)),
-                      _MenuItemVertical(
-                        icon: Icons.logout_rounded,
-                        label: "Sair",
-                        color: const Color(0xFFEA6C66),
-                        onTap: () async {
-                          _closeMenu();
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (ctx) => const Center(
-                              child: CircularProgressIndicator(),
+                      // Menu centralizado
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _MenuItemVertical(
+                              icon: Icons.people_alt_rounded,
+                              label: "Gerenciar Clientes",
+                              onTap: () {
+                                _closeMenu();
+                                Navigator.pushNamed(context, '/clients');
+                              },
+                              centerContent: true,
                             ),
-                          );
-                          await FirebaseAuth.instance.signOut();
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
+                            const SizedBox(height: 12),
+                            _MenuItemVertical(
+                              icon: Icons.design_services_rounded,
+                              label: "Tipos de Serviço",
+                              onTap: () {
+                                _closeMenu();
+                                Navigator.pushNamed(context, '/service-types');
+                              },
+                              centerContent: true,
+                            ),
+                            const SizedBox(height: 12),
+                            _MenuItemVertical(
+                              icon: Icons.logout_rounded,
+                              label: "Sair",
+                              color: const Color(0xFFEA6C66),
+                              onTap: () async {
+                                _closeMenu();
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (ctx) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                                await FirebaseAuth.instance.signOut();
+                                Navigator.of(context, rootNavigator: true).pop();
+                              },
+                              centerContent: true,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-          ],
-        ),
+            )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
     );
   }
@@ -233,36 +258,42 @@ class _MenuItemVertical extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final Color? color;
+  final bool centerContent;
 
   const _MenuItemVertical({
     required this.icon,
     required this.label,
     required this.onTap,
     this.color,
+    this.centerContent = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Row(
-          children: [
-            Icon(icon, color: color ?? const Color(0xFF5E60CE)),
-            const SizedBox(width: 18),
-            Text(
-              label,
-              style: TextStyle(
-                color: color ?? const Color(0xFF5E60CE),
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Inter',
-                fontSize: 17,
-              ),
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+        minimumSize: const Size(180, 48),
+        alignment: Alignment.center,
+        foregroundColor: color ?? const Color(0xFF5E60CE),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: centerContent ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: [
+          Icon(icon, color: color ?? const Color(0xFF5E60CE), size: 26),
+          const SizedBox(width: 16),
+          Text(
+            label,
+            style: TextStyle(
+              color: color ?? const Color(0xFF5E60CE),
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
+              fontSize: 18,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

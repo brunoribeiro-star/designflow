@@ -1,3 +1,4 @@
+import 'package:designflow/screens/edit_project_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'screens/clients_screen.dart';
 import 'screens/service_types_screen.dart';
 import 'screens/projects_by_status_screen.dart';
 import 'providers/project_provider.dart';
+import 'screens/edit_project_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -131,6 +133,7 @@ class MyApp extends StatelessWidget {
             title: args['title'],
           );
         },
+        '/edit-project': (context) => const EditProjectScreen(),
       },
     );
   }

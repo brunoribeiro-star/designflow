@@ -32,6 +32,37 @@ class Project {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
+  // ---------- MÉTODO copyWith ----------
+  Project copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    Client? client,
+    ServiceType? serviceType,
+    DateTime? deadline,
+    ProjectStatus? status,
+    List<ChecklistItem>? checklist,
+    List<ChecklistItem>? executionChecklist,
+    PaymentInfo? payment,
+    bool? isPaid,
+    DateTime? createdAt,
+  }) {
+    return Project(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      client: client ?? this.client,
+      serviceType: serviceType ?? this.serviceType,
+      deadline: deadline ?? this.deadline,
+      status: status ?? this.status,
+      checklist: checklist ?? List.from(this.checklist),
+      executionChecklist: executionChecklist ?? List.from(this.executionChecklist),
+      payment: payment ?? this.payment,
+      isPaid: isPaid ?? this.isPaid,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   // Para cores de prazo
   String get deadlineStatus {
     final now = DateTime.now();
@@ -121,6 +152,21 @@ class ChecklistItem {
     required this.title,
     this.isDone = false,
   });
+
+  // ---------- MÉTODO copy ----------
+  ChecklistItem copy({
+    String? id,
+    String? projectId,
+    String? title,
+    bool? isDone,
+  }) {
+    return ChecklistItem(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      title: title ?? this.title,
+      isDone: isDone ?? this.isDone,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
