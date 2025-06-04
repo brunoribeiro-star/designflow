@@ -122,7 +122,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        icon: const Icon(Icons.add, size: 22),
+                        icon: const Icon(Icons.add, size: 22, color: Colors.white,),
                         label: const Text("Adicionar"),
                         onPressed: () async {
                           final name = _controller.text.trim();

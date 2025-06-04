@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(
                             width: 220,
                             child: ElevatedButton.icon(
-                              icon: const Icon(Icons.add),
+                              icon: const Icon(Icons.add, color: Colors.white,),
                               label: const Text("Novo Projeto"),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF5E60CE),
