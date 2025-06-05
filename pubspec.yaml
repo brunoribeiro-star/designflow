@@ -42,10 +42,12 @@ dependencies:
   firebase_auth: ^5.5.4
   cloud_firestore: ^5.6.8
   flutter_slidable: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.4.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -70,6 +72,8 @@ flutter:
         - asset: assets/Inter-Regular.ttf
         - asset: assets/Inter-SemiBold.ttf
           weight: 600
+  assets:
+    - assets/icon.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -101,3 +105,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon.png"
+
+flutter_native_splash:
+  color: "#5E60CE"
+  image: assets/icon.png
+  android: true
+  ios: false
