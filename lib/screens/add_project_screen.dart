@@ -30,13 +30,23 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   List<ChecklistItem> _checklist = [];
 
   bool _loadingServiceTypes = false;
+  bool _loadingClients = false;
 
   @override
   void initState() {
     super.initState();
-    // Carrega os tipos de serviço ao abrir a tela, garantindo lista correta
+    // Carrega tipos de serviço e clientes antes de exibir a tela
     Future.microtask(() async {
-      setState(() => _loadingServiceTypes = true);
+      setState(() {
+        _loadingClients = true;
+        _loadingServiceTypes = true;
+      });
+
+      // Carrega clientes
+      await Provider.of<ClientProvider>(context, listen: false).loadClients();
+      setState(() => _loadingClients = false);
+
+      // Carrega tipos de serviço
       await Provider.of<ServiceTypeProvider>(context, listen: false).loadServiceTypes();
       setState(() => _loadingServiceTypes = false);
     });
@@ -132,7 +142,12 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    DropdownButtonFormField<Client>(
+                    _loadingClients
+                        ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                        : DropdownButtonFormField<Client>(
                       value: _selectedClient,
                       hint: const Text("Selecione o cliente"),
                       icon: const Icon(Icons.expand_more_rounded),

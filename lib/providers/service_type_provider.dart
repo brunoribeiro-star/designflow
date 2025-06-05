@@ -71,8 +71,9 @@ class ServiceTypeProvider with ChangeNotifier {
   }
 
   ServiceType? findById(String? id) {
+    if (id == null) return null;
     try {
-      return _serviceTypes.firstWhere((t) => t.id == id);
+      return _serviceTypes.firstWhere((st) => st.id == id);
     } catch (_) {
       return null;
     }

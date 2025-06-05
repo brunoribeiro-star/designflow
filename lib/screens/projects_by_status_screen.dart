@@ -16,12 +16,28 @@ class ProjectsByStatusScreen extends StatelessWidget {
     required this.title,
   }) : super(key: key);
 
+  // ===== BOTÃO PADRÃO E CANCELAR =====
+  ButtonStyle get _primaryButtonStyle => ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF5E60CE),
+    foregroundColor: Colors.white,
+    minimumSize: const Size(110, 42),
+    textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  );
+
+  ButtonStyle get _cancelButtonStyle => OutlinedButton.styleFrom(
+    foregroundColor: const Color(0xFF5E60CE),
+    side: const BorderSide(color: Color(0x405E60CE), width: 2),
+    minimumSize: const Size(110, 42),
+    textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  );
+
   @override
   Widget build(BuildContext context) {
     final projectProvider = Provider.of<ProjectProvider>(context);
-    final projects = projectProvider.projects
-        .where((p) => p.status == status)
-        .toList();
+    final projects =
+    projectProvider.projects.where((p) => p.status == status).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -52,20 +68,41 @@ class ProjectsByStatusScreen extends StatelessWidget {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text('Excluir projeto'),
-                          content: Text(
-                              'Tem certeza que deseja excluir o projeto "${project.name}"?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: const Text('Cancelar'),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          title: const Center(
+                            child: Text(
+                              'Excluir projeto',
+                              textAlign: TextAlign.center,
                             ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                              ),
-                              child: const Text('Excluir'),
+                          ),
+                          content: Text(
+                            'Tem certeza que deseja excluir o projeto "${project.name}"?',
+                            textAlign: TextAlign.center,
+                          ),
+                          actionsPadding: const EdgeInsets.only(
+                              bottom: 12, left: 16, right: 16),
+                          actions: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    style: _primaryButtonStyle,
+                                    onPressed: () =>
+                                        Navigator.pop(ctx, true),
+                                    child: const Text('Excluir'),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    style: _cancelButtonStyle,
+                                    onPressed: () =>
+                                        Navigator.pop(ctx, false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

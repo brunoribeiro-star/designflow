@@ -59,12 +59,22 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Métodos locais (para busca/autocomplete)
+  // Busca por nome
   Client? findByName(String name) {
     try {
       return _clients.firstWhere(
-            (client) => client.name.toLowerCase() == name.toLowerCase(),
+            (client) => client.name.trim().toLowerCase() == name.trim().toLowerCase(),
       );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // Busca por id (ÚTIL para dropdown no editar projeto!)
+  Client? findById(String? id) {
+    if (id == null) return null;
+    try {
+      return _clients.firstWhere((client) => client.id == id);
     } catch (_) {
       return null;
     }
