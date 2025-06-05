@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/project_provider.dart';
 import '../models/project.dart';
+import '../services/quote_service.dart'; // <<< IMPORTANTE!
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,6 +22,49 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _closeMenu() {
     if (_menuOpen) setState(() => _menuOpen = false);
+  }
+
+  // Função para exibir pop-up com frase inspiradora
+  Future<void> _showInspirationalQuote() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      final quote = await QuoteService.fetchRandomQuote();
+      Navigator.of(context, rootNavigator: true).pop(); // Fecha o loading
+
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Dose de Inspiração ✨'),
+          content: Text('"${quote.content}"\n\n— ${quote.author}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Fechar'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print("Erro: $e"); // <-- ESSA LINHA MOSTRA O ERRO NO LOG
+      Navigator.of(context, rootNavigator: true).pop();
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Erro'),
+          content: const Text('Não foi possível obter uma frase agora. Tente novamente depois.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Fechar'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -160,6 +204,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             onPressed: () => Navigator.pushNamed(context, '/add-project'),
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+
+                        // ============= BOTÃO "DOSE DE INSPIRAÇÃO" =============
+                        SizedBox(
+                          width: 220,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.auto_awesome_rounded, color: Color(0xFF5E60CE)),
+                            label: const Text(
+                              "Dose de Inspiração",
+                              style: TextStyle(color: Color(0xFF5E60CE)),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Color(0xFF5E60CE), width: 2),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: _showInspirationalQuote,
                           ),
                         ),
                       ],

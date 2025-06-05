@@ -168,49 +168,67 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           context: context,
           builder: (ctx) {
             bool _localChecked = false;
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: const Text("Pagamento pendente", textAlign: TextAlign.center),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Todas as etapas foram concluídas, mas falta o cliente realizar o pagamento final.",
-                    textAlign: TextAlign.center,
+            return StatefulBuilder(
+              builder: (context, setStateDialog) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  title: const Text("Pagamento pendente", textAlign: TextAlign.center),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Todas as etapas foram concluídas, mas falta o cliente realizar o pagamento final.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      const SizedBox(height: 12),
+                      // Checkbox centralizado e texto menor
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _localChecked,
+                            onChanged: (val) {
+                              setStateDialog(() {
+                                _localChecked = val ?? false;
+                              });
+                            },
+                          ),
+                          const Flexible(
+                            child: Text(
+                              "Cliente pagou o restante",
+                              style: TextStyle(fontSize: 15), // Menor que padrão
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  CheckboxListTile(
-                    value: _localChecked,
-                    onChanged: (val) {
-                      setState(() {});
-                      (ctx as Element).markNeedsBuild();
-                      _localChecked = val ?? false;
-                    },
-                    title: const Text("Cliente pagou o restante", textAlign: TextAlign.center),
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ),
-                ],
-              ),
-              actionsPadding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
-              actionsAlignment: MainAxisAlignment.spaceBetween,
-              actions: [
-                ElevatedButton(
-                  style: _primaryButtonStyle,
-                  onPressed: _localChecked
-                      ? () {
-                    pagamentoFeito = true;
-                    Navigator.of(ctx).pop();
-                  }
-                      : null,
-                  child: const Text("Finalizar projeto"),
-                ),
-                OutlinedButton(
-                  style: _cancelButtonStyle,
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text("Cancelar"),
-                ),
-              ],
+                  actionsPadding: const EdgeInsets.only(bottom: 12, left: 16, right: 16, top: 0),
+                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                  actions: [
+                    // Botão Cancelar à esquerda
+                    OutlinedButton(
+                      style: _cancelButtonStyle,
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: const Text("Cancelar"),
+                    ),
+                    // Botão Finalizar à direita
+                    ElevatedButton(
+                      style: _primaryButtonStyle,
+                      onPressed: _localChecked
+                          ? () {
+                        pagamentoFeito = true;
+                        Navigator.of(ctx).pop();
+                      }
+                          : null,
+                      child: const Text("Finalizar"),
+                    ),
+                  ],
+                );
+              },
             );
           },
         );
