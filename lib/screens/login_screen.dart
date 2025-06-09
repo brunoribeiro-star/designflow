@@ -29,9 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // Carrega os projetos do usuário autenticado
       await Provider.of<ProjectProvider>(context, listen: false).loadProjects();
-      // AuthGate faz o redirecionamento automático
     } on FirebaseAuthException {
       setState(() {
         _error = "Email ou senha inválidos";
@@ -215,8 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 18),
-
-                  // CORREÇÃO: Wrap evita overflow em telas pequenas
                   Wrap(
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,

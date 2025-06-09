@@ -18,7 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ClientProvider()),
         ChangeNotifierProvider(create: (_) => ServiceTypeProvider()),
       ],
-      child: const MyApp(), // Só chama o MyApp, que já tem AuthGate!
+      child: const MyApp(),
     ),
   );
 }

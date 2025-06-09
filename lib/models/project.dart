@@ -4,22 +4,22 @@ import 'service_type.dart';
 enum ProjectStatus { notStarted, inProgress, finished }
 
 class Project {
-  String? id; // Firestore docId ou SQLite id (string)
-  String? userId; // <-- Adicionado para multi-usuário
+  String? id;
+  String? userId;
   String name;
   Client client;
   ServiceType serviceType;
   DateTime deadline;
   ProjectStatus status;
-  List<ChecklistItem> checklist;           // Checklist inicial
-  List<ChecklistItem> executionChecklist;  // Checklist das etapas do projeto
+  List<ChecklistItem> checklist;
+  List<ChecklistItem> executionChecklist;
   PaymentInfo payment;
   bool isPaid;
   DateTime createdAt;
 
   Project({
     this.id,
-    this.userId, // <-- Adicionado aqui
+    this.userId,
     required this.name,
     required this.client,
     required this.serviceType,
@@ -32,7 +32,6 @@ class Project {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  // ---------- MÉTODO copyWith ----------
   Project copyWith({
     String? id,
     String? userId,
@@ -63,7 +62,6 @@ class Project {
     );
   }
 
-  // Para cores de prazo
   String get deadlineStatus {
     final now = DateTime.now();
     final difference = deadline.difference(now).inDays;
@@ -72,10 +70,9 @@ class Project {
     return 'red';
   }
 
-  /// ---------- SERIALIZAÇÃO PARA FIRESTORE ----------
   Map<String, dynamic> toFirestore() {
     return {
-      'userId': userId, // <-- Adicionado
+      'userId': userId,
       'name': name,
       'client': client.toFirestore(),
       'serviceType': serviceType.toFirestore(),
@@ -93,7 +90,7 @@ class Project {
     final map = doc.data() as Map<String, dynamic>;
     return Project(
       id: doc.id,
-      userId: map['userId'], // <-- Recupera userId
+      userId: map['userId'],
       name: map['name'] ?? '',
       client: Client.fromMap(Map<String, dynamic>.from(map['client'] ?? {})),
       serviceType: ServiceType.fromMap(
@@ -113,7 +110,6 @@ class Project {
     );
   }
 
-  /// ---------- SERIALIZAÇÃO PARA SQLite/local ----------
   factory Project.fromMap(
       Map<String, dynamic> map,
       Client client,
@@ -124,7 +120,7 @@ class Project {
       }) {
     return Project(
       id: map['id']?.toString(),
-      userId: map['userId'], // <-- Recupera userId localmente também, se houver
+      userId: map['userId'],
       name: map['name'] ?? '',
       client: client,
       serviceType: serviceType,
@@ -139,7 +135,6 @@ class Project {
   }
 }
 
-// Checklist adaptado para Firestore/SQLite
 class ChecklistItem {
   String? id;
   String? projectId;
@@ -153,7 +148,6 @@ class ChecklistItem {
     this.isDone = false,
   });
 
-  // ---------- MÉTODO copy ----------
   ChecklistItem copy({
     String? id,
     String? projectId,
@@ -187,7 +181,6 @@ class ChecklistItem {
   }
 }
 
-// Pagamento
 enum PaymentMethod { card, pixSingle, pixSplit }
 
 class PaymentInfo {

@@ -54,7 +54,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Título e explicação
               Text(
                 "Gerencie seus clientes",
                 style: theme.textTheme.titleLarge!.copyWith(
@@ -72,8 +71,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-
-              // Campo de adicionar novo cliente
               Material(
                 elevation: 0.5,
                 color: Colors.white,
@@ -137,8 +134,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 ),
               ),
               const SizedBox(height: 26),
-
-              // Lista de clientes
               Expanded(
                 child: _loading
                     ? const Center(child: CircularProgressIndicator())

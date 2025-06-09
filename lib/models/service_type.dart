@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ServiceType {
-  String? id; // Firestore document ID
+  String? id;
   String name;
   DateTime createdAt;
 
@@ -11,7 +11,6 @@ class ServiceType {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Serializa para Firestore (salva/atualiza)
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
@@ -19,7 +18,6 @@ class ServiceType {
     };
   }
 
-  /// Constrói a partir de DocumentSnapshot do Firestore
   factory ServiceType.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return ServiceType(
@@ -31,7 +29,6 @@ class ServiceType {
     );
   }
 
-  /// Constrói a partir de Map<String, dynamic> (aninhado em Project)
   factory ServiceType.fromMap(Map<String, dynamic> map) {
     return ServiceType(
       id: map['id'],
@@ -42,7 +39,6 @@ class ServiceType {
     );
   }
 
-  /// Para criar/atualizar localmente
   ServiceType copyWith({
     String? id,
     String? name,
@@ -55,7 +51,6 @@ class ServiceType {
     );
   }
 
-  // ------- Adicione este trecho para correção do Dropdown -------
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -66,5 +61,4 @@ class ServiceType {
 
   @override
   int get hashCode => (id ?? name).hashCode;
-// --------------------------------------------------------------
 }

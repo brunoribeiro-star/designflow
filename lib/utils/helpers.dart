@@ -1,7 +1,4 @@
-// Funções auxiliares para formatação
-
 String formatDateBR(DateTime date) {
-  // Exemplo: 25/05/2025
   return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 }
 

@@ -1,5 +1,3 @@
-// Validações simples para formulários
-
 String? notEmpty(String? value, [String message = "Campo obrigatório"]) {
   if (value == null || value.trim().isEmpty) {
     return message;

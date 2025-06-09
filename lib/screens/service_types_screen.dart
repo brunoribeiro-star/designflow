@@ -30,7 +30,6 @@ class _ServiceTypesScreenState extends State<ServiceTypesScreen> {
   void _addServiceType(ServiceTypeProvider provider) async {
     final name = _controller.text.trim();
     if (name.isEmpty) return;
-    // Evita duplicados
     if (provider.serviceTypes.any((st) => st.name.toLowerCase() == name.toLowerCase())) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Este tipo de serviço já existe!")),

@@ -13,7 +13,6 @@ class ServiceTypeProvider with ChangeNotifier {
 
   String? get _userId => _auth.currentUser?.uid;
 
-  /// Carrega tipos de serviço do Firestore (por usuário logado)
   Future<void> loadServiceTypes() async {
     if (_userId == null) return;
     final snapshot = await _firestore
@@ -28,7 +27,6 @@ class ServiceTypeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Adiciona tipo de serviço no Firestore (no topo da lista)
   Future<void> addServiceType(ServiceType type) async {
     if (_userId == null) return;
     final doc = await _firestore
@@ -36,12 +34,10 @@ class ServiceTypeProvider with ChangeNotifier {
         .doc(_userId)
         .collection('service_types')
         .add(type.toFirestore());
-    // Adiciona o novo tipo no início da lista
     _serviceTypes.insert(0, type.copyWith(id: doc.id));
     notifyListeners();
   }
 
-  /// Atualiza tipo de serviço
   Future<void> updateServiceType(ServiceType type) async {
     if (_userId == null || type.id == null) return;
     await _firestore
@@ -57,7 +53,6 @@ class ServiceTypeProvider with ChangeNotifier {
     }
   }
 
-  /// Remove tipo de serviço
   Future<void> removeServiceType(ServiceType type) async {
     if (_userId == null || type.id == null) return;
     await _firestore
@@ -89,7 +84,6 @@ class ServiceTypeProvider with ChangeNotifier {
     }
   }
 
-  /// (Opcional) Limpa os tipos ao fazer logout, chame isso no signOut do app
   void clear() {
     _serviceTypes.clear();
     notifyListeners();

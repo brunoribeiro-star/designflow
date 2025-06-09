@@ -18,15 +18,13 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   List<ChecklistItem> _executionChecklistDraft = [];
 
   final Color _primaryColor = const Color(0xFF5E60CE);
-  final Color _borderColor = const Color(0x275E60CE); // roxo opaco
+  final Color _borderColor = const Color(0x275E60CE);
 
   @override
   void dispose() {
     _executionChecklistController.dispose();
     super.dispose();
   }
-
-  // Estilo botão principal (roxo)
   ButtonStyle get _primaryButtonStyle => ElevatedButton.styleFrom(
     backgroundColor: _primaryColor,
     foregroundColor: Colors.white,
@@ -34,8 +32,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
   );
-
-  // Estilo botão cancelar (borda roxa opaca)
   ButtonStyle get _cancelButtonStyle => OutlinedButton.styleFrom(
     foregroundColor: _primaryColor,
     side: BorderSide(color: _primaryColor.withOpacity(0.25), width: 2),
@@ -43,8 +39,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
   );
-
-  // Usar esse para o único botão (OK, etc.)
   ButtonStyle get _singleFullButtonStyle => ElevatedButton.styleFrom(
     backgroundColor: _primaryColor,
     foregroundColor: Colors.white,
@@ -90,13 +84,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               ),
             )
           else ...[
-            // Ação principal (esquerda)
             ElevatedButton(
               style: _primaryButtonStyle,
               onPressed: mainEnabled ? onMain : null,
               child: Text(mainLabel),
             ),
-            // Cancelar (direita)
             if (cancelLabel != null && onCancel != null)
               OutlinedButton(
                 style: _cancelButtonStyle,
@@ -209,13 +201,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                   actionsPadding: const EdgeInsets.only(bottom: 12, left: 16, right: 16, top: 0),
                   actionsAlignment: MainAxisAlignment.spaceBetween,
                   actions: [
-                    // Botão Cancelar à esquerda
                     OutlinedButton(
                       style: _cancelButtonStyle,
                       onPressed: () => Navigator.of(ctx).pop(),
                       child: const Text("Cancelar"),
                     ),
-                    // Botão Finalizar à direita
                     ElevatedButton(
                       style: _primaryButtonStyle,
                       onPressed: _localChecked
@@ -418,7 +408,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // NOME DO PROJETO (maior destaque)
                       Text(
                         project.name,
                         style: theme.textTheme.headlineMedium!.copyWith(
@@ -429,12 +418,8 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-
-                      // STATUS DO PROJETO (chip colorido)
                       _buildStatusChip(project.status),
                       const SizedBox(height: 22),
-
-                      // DADOS PRINCIPAIS
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -467,8 +452,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-
-                      // PAGAMENTO (centralizado e responsivo)
                       Container(
                         width: double.infinity,
                         alignment: Alignment.center,

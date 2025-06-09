@@ -1,5 +1,5 @@
 class Client {
-  String? id; // <- Para firestore use String
+  String? id;
   String name;
   String? email;
   String? phone;
@@ -13,7 +13,6 @@ class Client {
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  // Serialização para firestore
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
@@ -23,7 +22,6 @@ class Client {
     };
   }
 
-  // Desserialização do firestore
   factory Client.fromFirestore(dynamic doc) {
     final map = doc.data() as Map<String, dynamic>;
     return Client(
@@ -37,7 +35,6 @@ class Client {
     );
   }
 
-  // Local, se precisar
   Map<String, dynamic> toMap() {
     return {
       'id': id,

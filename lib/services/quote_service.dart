@@ -13,7 +13,6 @@ class QuoteService {
     final url = Uri.parse('https://zenquotes.io/api/random');
     final res = await http.get(url);
     if (res.statusCode == 200) {
-      // ZenQuotes retorna uma lista com um único item
       final List<dynamic> data = jsonDecode(res.body);
       final q = data[0];
       return Quote(content: q['q'] ?? '', author: q['a'] ?? 'Autor desconhecido');

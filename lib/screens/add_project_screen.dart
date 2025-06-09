@@ -35,18 +35,15 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   @override
   void initState() {
     super.initState();
-    // Carrega tipos de serviço e clientes antes de exibir a tela
     Future.microtask(() async {
       setState(() {
         _loadingClients = true;
         _loadingServiceTypes = true;
       });
 
-      // Carrega clientes
       await Provider.of<ClientProvider>(context, listen: false).loadClients();
       setState(() => _loadingClients = false);
 
-      // Carrega tipos de serviço
       await Provider.of<ServiceTypeProvider>(context, listen: false).loadServiceTypes();
       setState(() => _loadingServiceTypes = false);
     });
@@ -91,7 +88,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Título
                     Text(
                       "Adicionar Novo Projeto",
                       style: theme.textTheme.titleLarge!.copyWith(
@@ -101,8 +97,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-
-                    // Nome do Projeto
                     Text(
                       "Nome do Projeto",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -132,8 +126,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       value == null || value.isEmpty ? "Campo obrigatório" : null,
                     ),
                     const SizedBox(height: 20),
-
-                    // Cliente
                     Text(
                       "Cliente",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -203,8 +195,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Tipo de Serviço
                     Text(
                       "Tipo de Serviço",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -278,8 +268,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Data de entrega
                     Text(
                       "Data de Entrega",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -325,8 +313,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                       ],
                     ),
                     const SizedBox(height: 22),
-
-                    // Checklist inicial
                     Text(
                       "Checklist Inicial",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -410,8 +396,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                         ),
                       ),
                     const SizedBox(height: 28),
-
-                    // Pagamento
                     Text(
                       "Forma de Pagamento",
                       style: theme.textTheme.bodySmall!.copyWith(
@@ -489,8 +473,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                         ],
                       ),
                     const SizedBox(height: 30),
-
-                    // Salvar Projeto
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -517,8 +499,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                 ));
                             return;
                           }
-
-                          // Monta os objetos auxiliares
                           final payment = PaymentInfo(
                             method: _selectedPaymentMethod,
                             installments: _selectedPaymentMethod == PaymentMethod.card

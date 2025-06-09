@@ -29,7 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // Limpa/carrega os projetos do novo usuário cadastrado
       await Provider.of<ProjectProvider>(context, listen: false).loadProjects();
       Navigator.pop(context); // Volta pro login (AuthGate vai redirecionar)
     } on FirebaseAuthException catch (e) {

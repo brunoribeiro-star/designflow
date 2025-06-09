@@ -20,7 +20,6 @@ class ProjectProvider with ChangeNotifier {
 
   String? get _userId => FirebaseAuth.instance.currentUser?.uid;
 
-  /// Carrega todos os projetos exclusivos do usuário logado
   Future<void> loadProjects() async {
     if (_userId == null) return;
 
@@ -38,7 +37,6 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Adiciona um novo projeto para o usuário logado
   Future<void> addProject(Project project) async {
     if (_userId == null) return;
 
@@ -53,11 +51,9 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Atualiza um projeto do usuário logado (corrigido para receber projeto original e atualizado)
   Future<void> updateProject(Project original, Project updated) async {
     if (_userId == null || original.id == null) return;
 
-    // Garante que o id seja mantido no projeto atualizado
     updated.id = original.id;
 
     await FirebaseFirestore.instance
@@ -74,7 +70,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Remove um projeto do usuário logado
   Future<void> removeProject(Project project) async {
     if (_userId == null || project.id == null) return;
 
@@ -89,7 +84,6 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Marcação de checklist inicial
   Future<void> toggleChecklistItem(Project project, ChecklistItem item) async {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
@@ -102,7 +96,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Marcação do checklist de execução
   Future<void> toggleExecutionChecklistItem(Project project, ChecklistItem item) async {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
@@ -116,7 +109,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Define o checklist de execução completo (útil para etapas)
   Future<void> setExecutionChecklist(Project project, List<ChecklistItem> checklist) async {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
@@ -125,7 +117,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Troca o status do projeto
   Future<void> changeStatus(Project project, ProjectStatus status) async {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
@@ -134,7 +125,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Atualiza status de pagamento
   Future<void> updatePaymentStatus(Project project, bool isPaid) async {
     final pIndex = _projects.indexWhere((p) => p.id == project.id);
     if (pIndex != -1) {
@@ -143,12 +133,10 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
-  /// Força recarregamento (útil após login/logout/troca de usuário)
   Future<void> reload() async {
     await loadProjects();
   }
 
-  /// Limpa os projetos locais (útil após logout)
   void clearProjects() {
     _projects.clear();
     notifyListeners();

@@ -15,8 +15,6 @@ class ProjectsByStatusScreen extends StatelessWidget {
     required this.status,
     required this.title,
   }) : super(key: key);
-
-  // ===== BOTÃO PADRÃO E CANCELAR =====
   ButtonStyle get _primaryButtonStyle => ElevatedButton.styleFrom(
     backgroundColor: const Color(0xFF5E60CE),
     foregroundColor: Colors.white,

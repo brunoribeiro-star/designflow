@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../models/client.dart';
 
 class ClientProvider with ChangeNotifier {
@@ -9,7 +8,6 @@ class ClientProvider with ChangeNotifier {
 
   List<Client> get clients => List.unmodifiable(_clients);
 
-  // Busca clientes do usuário logado
   Future<void> loadClients() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -27,7 +25,6 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Adiciona cliente ao Firestore e local
   Future<void> addClient(Client client) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -43,7 +40,6 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Remove cliente do Firestore e local
   Future<void> removeClient(Client client) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || client.id == null) return;
@@ -59,7 +55,6 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Busca por nome
   Client? findByName(String name) {
     try {
       return _clients.firstWhere(
@@ -70,7 +65,6 @@ class ClientProvider with ChangeNotifier {
     }
   }
 
-  // Busca por id (ÚTIL para dropdown no editar projeto!)
   Client? findById(String? id) {
     if (id == null) return null;
     try {

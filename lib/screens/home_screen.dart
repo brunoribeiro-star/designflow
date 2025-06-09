@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../providers/project_provider.dart';
 import '../models/project.dart';
-import '../services/quote_service.dart'; // <<< IMPORTANTE!
+import '../services/quote_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_menuOpen) setState(() => _menuOpen = false);
   }
 
-  // Função para exibir pop-up com frase inspiradora
   Future<void> _showInspirationalQuote() async {
     showDialog(
       context: context,
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     try {
       final quote = await QuoteService.fetchRandomQuote();
-      Navigator.of(context, rootNavigator: true).pop(); // Fecha o loading
+      Navigator.of(context, rootNavigator: true).pop();
 
       showDialog(
         context: context,
@@ -49,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     } catch (e) {
-      print("Erro: $e"); // <-- ESSA LINHA MOSTRA O ERRO NO LOG
+      print("Erro: $e");
       Navigator.of(context, rootNavigator: true).pop();
       showDialog(
         context: context,
@@ -71,8 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final projectProvider = Provider.of<ProjectProvider>(context);
     final theme = Theme.of(context);
-
-    // Contagem de cada status
     final int notStarted = projectProvider.projects
         .where((p) => p.status == ProjectStatus.notStarted)
         .length;
@@ -87,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // Conteúdo principal
           Column(
             children: [
               AppBar(
@@ -106,14 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 actions: const [],
               ),
-              // O resto do conteúdo da tela
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Mensagem de boas-vindas
                         Text(
                           "Bem-vindo ao DesignFlow 👋",
                           style: theme.textTheme.bodyLarge!.copyWith(fontSize: 22),
@@ -126,8 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 28),
-
-                        // Card: Projetos a iniciar
                         _StatusCard(
                           icon: Icons.access_time_rounded,
                           label: "A Iniciar",
@@ -145,8 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         const SizedBox(height: 18),
-
-                        // Card: Em andamento
                         _StatusCard(
                           icon: Icons.play_arrow_rounded,
                           label: "Em Andamento",
@@ -164,8 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         const SizedBox(height: 18),
-
-                        // Card: Finalizados
                         _StatusCard(
                           icon: Icons.check_circle_rounded,
                           label: "Finalizados",
@@ -183,8 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         const SizedBox(height: 38),
-
-                        // Botão de adicionar novo projeto (CTA destacado)
                         SizedBox(
                           width: 220,
                           child: ElevatedButton.icon(
@@ -207,8 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-
-                        // ============= BOTÃO "DOSE DE INSPIRAÇÃO" =============
                         SizedBox(
                           width: 220,
                           child: OutlinedButton.icon(
@@ -239,7 +223,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          // Overlay do Menu Hamburguer - Cobre toda a tela com animação e centralizado
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 230),
             transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
@@ -264,7 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: _closeMenu,
                         ),
                       ),
-                      // Menu centralizado
                       Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -368,8 +350,6 @@ class _MenuItemVertical extends StatelessWidget {
     );
   }
 }
-
-// Card customizado para o status do projeto
 class _StatusCard extends StatelessWidget {
   final IconData icon;
   final String label;

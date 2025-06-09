@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StatusDot extends StatelessWidget {
-  final String status; // "green", "yellow" ou "red"
+  final String status;
   const StatusDot({super.key, required this.status});
 
   @override

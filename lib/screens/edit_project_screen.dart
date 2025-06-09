@@ -48,7 +48,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
     _nameController = TextEditingController(text: _project.name);
     _deadline = _project.deadline;
 
-    // Busca cliente e tipo por id. Se não achar, retorna null.
     _selectedClient = clientProvider.clients
         .where((c) => c.id == _project.client.id)
         .cast<Client?>()
@@ -172,8 +171,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 30),
-
-                    // Nome do Projeto
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -194,8 +191,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                       validator: (value) => (value == null || value.trim().isEmpty) ? "Campo obrigatório" : null,
                     ),
                     const SizedBox(height: 22),
-
-                    // Cliente
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -214,8 +209,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                       validator: (value) => value == null ? "Campo obrigatório" : null,
                     ),
                     const SizedBox(height: 22),
-
-                    // Tipo de Serviço
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -234,8 +227,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                       validator: (value) => value == null ? "Campo obrigatório" : null,
                     ),
                     const SizedBox(height: 30),
-
-                    // Checklist Inicial
                     if (_project.status == ProjectStatus.notStarted) ...[
                       Align(
                         alignment: Alignment.centerLeft,
@@ -286,8 +277,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                       ),
                       const SizedBox(height: 24),
                     ],
-
-                    // Checklist de Execução
                     if (_project.status == ProjectStatus.inProgress) ...[
                       Align(
                         alignment: Alignment.centerLeft,
@@ -340,7 +329,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                     ],
 
                     const SizedBox(height: 16),
-                    // Botões Centralizados
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

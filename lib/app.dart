@@ -139,7 +139,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// >>>>>>>>>>>>>> AUTH GATE <<<<<<<<<<<<<<<<
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -154,15 +153,12 @@ class AuthGate extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        // Logado: carrega os projetos do usuário autenticado ANTES de abrir a Home
         if (snapshot.hasData) {
-          // Carrega projetos do usuário atual
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Provider.of<ProjectProvider>(context, listen: false).loadProjects();
           });
           return const HomeScreen();
         }
-        // Não logado
         return const LoginScreen();
       },
     );
